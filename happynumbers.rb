@@ -1,18 +1,18 @@
 class HappyNumbers
-  def initialize(number)
-    @number = number
+  def initialize
+    @happyNumberArray = []
   end
 
-  def split_number_to_digits
+  def split_number_to_digits number
     digits = []
-    @number.to_s().split(//).each do |digit| 
+    number.to_s().split(//).each do |digit|
       digits.push(digit.to_i)
     end
     digits
   end
 
-  def sum_squares_of_digits
-    digits = split_number_to_digits()
+  def sum_squares_of_digits number
+    digits = split_number_to_digits number
     newNumber = 0
     digits.each do |digit|
       newNumber += (digit * digit)
@@ -20,29 +20,43 @@ class HappyNumbers
     return newNumber
   end
 
-  def is_happy_number
-    runningNumber = @number
+  def is_happy_number number
     numberList = []
-    while (@number != 1)
-      if (numberList.include? @number)
+    while (number != 1)
+      if (numberList.include? number)
         return false
       end
-      numberList << @number
-      runningNumber = sum_squares_of_digits
-      @number = runningNumber
+      numberList << number
+      runningNumber = sum_squares_of_digits number
+      number = runningNumber
     end
     return true
   end
-end
 
-numberList = (1..1000).to_a
-totalHappyNumbers = 0
+  def permutate number
+    digits = split_number_to_digits number
+    permutations = digits.permutation().to_a
+    permutations.each() do |happy|
+      @happyNumberArray << happy
+    end
+  end
 
-numberList.each do |number|
-  happyNumber = HappyNumbers.new(number)
-  if happyNumber.is_happy_number == true
-    totalHappyNumbers += 1
-    puts number
+  def build_happy_numbers *numbers
+
+    numbers.each do |number|
+      if is_happy_number number
+         permutate number
+      end
+    end
+  end
+
+  def get_happy_numbers
+    @happyNumberArray
   end
 end
-puts "Total happy numbers: #{totalHappyNumbers}"
+
+numberList = (1..19).to_a
+happyist = HappyNumbers.new()
+happyist.build_happy_numbers numberList
+
+puts "Total happy numbers: #{happyist.get_happy_numbers.length}"
